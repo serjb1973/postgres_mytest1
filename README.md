@@ -6,10 +6,19 @@
 - Получаем информацию из тестовой БД
 ### Технологии
 PostgreSQL 13.8
-### Для проекта помимо plpgsql дополнительно необходимы расширения:
-- CREATE EXTENSION plpython3u;
-- CREATE EXTENSION jsonb_plpython3u;
-- CREATE EXTENSION dblink;
+### Установка проекта:
+```
+create user mytestuser with superuser password 'test';
+create database mytestdb with owner mytestuser;
+create schema extensions;
+CREATE EXTENSION dblink SCHEMA extensions;
+CREATE EXTENSION jsonb_plpython3u cascade SCHEMA extensions;
+SHOW search_path;
+ALTER DATABASE mytestdb SET search_path = "$user", public, extensions;
+sudo -iu postgres psql -d mytestdb -U mytestuser < hh.sql
+sudo -iu postgres psql -d mytestdb -U mytestuser < telegram.sql
+sudo -iu postgres psql -d mytestdb -U mytestuser < public.sql
+```
 ### Необходимо заполнить таблицу params
 ### например:
 ```
