@@ -264,16 +264,6 @@ ALTER TABLE public.telegrams_log_id_seq OWNER TO mytestuser;
 ALTER SEQUENCE public.telegrams_log_id_seq OWNED BY public.telegrams_log.id;
 
 
---
--- Name: ttest; Type: TABLE; Schema: public; Owner: mytestuser
---
-
-CREATE TABLE public.ttest (
-    id bigint
-);
-
-
-ALTER TABLE public.ttest OWNER TO mytestuser;
 
 --
 -- Name: vacancies; Type: TABLE; Schema: public; Owner: mytestuser
