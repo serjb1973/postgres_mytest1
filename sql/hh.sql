@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.8 (Ubuntu 13.8-1.pgdg22.04+1)
--- Dumped by pg_dump version 13.8 (Ubuntu 13.8-1.pgdg22.04+1)
+-- Dumped from database version 14.5 (Ubuntu 14.5-0ubuntu0.22.04.1)
+-- Dumped by pg_dump version 14.5 (Ubuntu 14.5-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -41,18 +41,20 @@ DECLARE
 v_page text;
 v_record RECORD;
 v_result text[];
+v_format text:='|%-18s|%4s|%5s|%7s|%7s|';
 BEGIN
 /* шапка c форматированием для telegram*/
 v_page:='Данные в локальной БД по всем специальностям%0A';
-v_page:=v_page||format('|%-36s|%8s|%15s|%8s|%8s|', 'Регион', 'Кол-во', 'Уник. спец-ти', 'ЗП от', 'ЗП до')||'%0A';
-v_page:=v_page||format('|%-36s|%8s|%15s|%8s|%8s|', rpad('-',36,'-'), rpad('-',8,'-'), rpad('-',15,'-'),rpad('-',8,'-'),rpad('-',8,'-'))||'%0A';
+v_page:=v_page||rpad('-',47,'-')||'%0A';
+v_page:=v_page||format(v_format, 'Регион', 'Кол.', 'Уник', 'ЗП от', 'ЗП до')||'%0A';
+v_page:=v_page||format(v_format, rpad('-',18,'-'), rpad('-',4,'-'), rpad('-',5,'-'),rpad('-',7,'-'),rpad('-',7,'-'))||'%0A';
 /* тело */
-FOR v_record in (with t as (select area_name ,vac_name,
+FOR v_record in (with t as (select (regexp_split_to_array(area_name,'\s+'))[1] area_name,vac_name,
 (case when val#>>'{salary,currency}' is null then 'RUR' else val#>>'{salary,currency}' end) as currency,
 (val#>>'{salary,from}')::bigint salary_from,
 (val#>>'{salary,to}')::bigint salary_to 
 from vacancies order by 1)
-select format('|%-36s|%8s|%15s|%8s|%8s|',(case when area_name is null then 'Всего' else area_name end),
+select format(v_format,(case when area_name is null then 'Всего' else area_name end),
 count(*),
 count(distinct vac_name),
 min(salary_from)::bigint,
@@ -70,7 +72,7 @@ group by GROUPING SETS(area_name,()))
 	END IF;
 	END LOOP;
 /* добавляем форматирование для telegram */
-v_page:='<pre>'||v_page||'</pre>';
+v_page:='<pre>'||v_page||rpad('-',47,'-')||'</pre>';
 v_result:=v_result||v_page;
 return v_result;
 END;
