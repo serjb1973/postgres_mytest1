@@ -5,8 +5,8 @@
 - Получаем информацию по запросу
 - Получаем информацию из тестовой БД
 ### Технологии
-PostgreSQL 13.8
-Ubuntu 22.04
+- PostgreSQL 13.8
+- Ubuntu 22.04
 ### Установка проекта:
 ```
 sudo apt-get install postgresql-14 postgresql-server-dev-14 postgresql-contrib-14 postgresql-plpython3-14
